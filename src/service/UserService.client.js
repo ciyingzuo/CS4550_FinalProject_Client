@@ -8,7 +8,7 @@ class UserServiceClient {
 
 
     register(user) {
-        return fetch("http://localhost:4550/user", {
+        return fetch("http://localhost:4550/user/createUser", {
             method: 'post',
             credentials: 'include',
             body: JSON.stringify(user),
@@ -16,8 +16,8 @@ class UserServiceClient {
                 'content-type': 'application/json'
             }
         }).then(response => {
-                return response.json();
-            });
+            return response.status;
+        });
     }
 
     login(user) {
@@ -29,8 +29,27 @@ class UserServiceClient {
                 'content-type': 'application/json'
             }
         }).then(response => {
-                return response.json();
-            });
+            return response.json();
+        });
+    }
+
+    logout() {
+        return fetch("http://localhost:4550/user/logout", {
+            credentials: 'include',
+        });
+    }
+
+    updateUser(user) {
+        return fetch("http://localhost:4550/user/updateUser", {
+            method: 'put',
+            credentials: 'include',
+            body: JSON.stringify(user),
+            headers: {
+                'content-type': 'application/json'
+            }
+        }).then(response => {
+            return response.json();
+        });
     }
 
     currentUser() {
@@ -39,6 +58,14 @@ class UserServiceClient {
         }).then(response => {
             return response.json();
         });
+    }
+
+    searchUser(username) {
+        return fetch("http://localhost:4550/user/search/" + username, {
+            credentials: 'include'
+        }).then(response => {
+            return response.json()
+        })
     }
 
     changeRelationship(userID, type) {

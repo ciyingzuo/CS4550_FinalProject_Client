@@ -7,11 +7,11 @@ class PostServiceClient {
     Topic_API_URL = this.HEROKU_URL;
 
 
-    createPost(message) {
+    createPost(post) {
         return fetch("http://localhost:4550/post/", {
             method: 'post',
             credentials: 'include',
-            body: JSON.stringify(message),
+            body: JSON.stringify(post),
             headers: {
                 'content-type': 'application/json'
             }
@@ -30,6 +30,16 @@ class PostServiceClient {
             }
         }).then(response => {
             return response.json();
+        });
+    }
+
+    findPostForUser(userID) {
+        return fetch("http://localhost:4550/post/findPostForUser/" + userID, {
+            credentials: 'include',
+        }).then(response => {
+            return response.json();
+        }, err => {
+            return null
         });
     }
 

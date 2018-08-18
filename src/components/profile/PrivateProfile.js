@@ -1,23 +1,43 @@
 import React from 'react'
+import UserServiceClient from "../../service/UserService.client";
 
 class PrivateProfile extends React.Component {
 
     constructor(props) {
         super(props);
+        this.userService = UserServiceClient.instance;
         this.state = {
             user: {
-                username: "ciyingzuo", birthday: "1996-10-22", firstName: "Yingzuo", registerDate: "1996-10-22",
-                lastName: "Ci", country: "China", emailAddress: "huntercyz@outlook.com", phoneNumber: "123456789"
+                username: String, firstName: "", registerDate: "",
+                lastName: "", emailAddress: "", phoneNumber: "", privacy: "", birthDate: Date
             },
             select: "Basic"
         }
 
     }
 
+    componentDidMount() {
+        this.userService.currentUser().then(user => {
+            this.setState({user: user})
+        })
+    }
+
+    updateProfile() {
+        this.userService.updateUser(this.user).then(status => {
+            alert("Update Success")
+        });
+    }
+
+    logout() {
+        this.userService.logout().then(
+            window.location.href = 'login'
+        )
+    }
+
     mainProfile() {
         if (this.state.select === "Basic") {
-            return (<ul class="list-group list-group-flush">
-                <li class="list-group-item">
+            return (<ul className="list-group list-group-flush">
+                <li className="list-group-item">
                     Username: <input disabled value={this.state.user.username}/>
                 </li>
                 <li className="list-group-item">
@@ -32,30 +52,30 @@ class PrivateProfile extends React.Component {
                 <li className="list-group-item">
                     Phone Number: <input value={this.state.user.phoneNumber}/>
                 </li>
-                <li class="list-group-item">
-                    Birth Date: <input disabled value={this.state.user.birthday}/>
+                <li className="list-group-item">
+                    Birth Date: <input disabled value={this.state.user.birthDate}/>
                 </li>
             </ul>)
         } else if (this.state.select === "Security") {
-            return (<ul class="list-group list-group-flush">
+            return (<ul className="list-group list-group-flush">
                 <li className="list-group-item">
                     Register Date: <input disabled value={this.state.user.registerDate}/>
                 </li>
-                <li class="list-group-item">
-                    Enter New Password: <input type="password" placeholder={"New Password"}/>
-                </li>
                 <li className="list-group-item">
-                    Personal Profile Visibility: <select className="form-control">
-                    <option value="Student"> Everyone</option>
-                    <option value="Student"> Friends Only</option>
-                    <option value="Student"> Private</option>
-                </select>
+                    Enter New Password: <input type="password" placeholder={"New Password"}/>
                 </li>
             </ul>)
         } else if (this.state.select === "Privacy") {
-            return (<ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                    Log Out
+            return (<ul className="list-group list-group-flush">
+                <li className="list-group-item">
+                    Personal Profile Visibility: <select className="form-control"
+                                                         defaultValue={this.state.user.privacy}>
+                    <option value="Public"> Public</option>
+                    <option value="Private"> Private</option>
+                </select>
+                </li>
+                <li className="list-group-item">
+                    <button className="btn btn-danger">Delete All message</button>
                 </li>
             </ul>)
         }
@@ -77,7 +97,7 @@ class PrivateProfile extends React.Component {
                 <li className="list-group-item" style={{cursor: 'pointer'}} onClick={() => {
                     this.setState({select: "Privacy"})
                 }}>
-                    Friends and Groups
+                    Privacy
                 </li>
             </div>)
         } else if (this.state.select === "Security") {
@@ -95,7 +115,7 @@ class PrivateProfile extends React.Component {
                 <li className="list-group-item" style={{cursor: 'pointer'}} onClick={() => {
                     this.setState({select: "Privacy"})
                 }}>
-                    Friends and Groups
+                    Privacy
                 </li>
             </div>)
         } else if (this.state.select === "Privacy") {
@@ -113,26 +133,30 @@ class PrivateProfile extends React.Component {
                 <li className="list-group-item active" style={{cursor: 'pointer'}} onClick={() => {
                     this.setState({select: "Privacy"})
                 }}>
-                    Friends and Groups
+                    Privacy
                 </li>
             </div>)
         }
     }
 
     render() {
-        return (<div class="container-fluid row">
+        return (<div className="container-fluid row">
             <div className="col-4">
                 {this.profileMenu()}
                 <br></br>
-                <button className="btn btn-success form-control">
+                <button className="btn btn-success form-control" onClick={() => {
+                    this.updateProfile()
+                }}>
                     Save All Changes
                 </button>
-                <button className="btn btn-warning form-control">
+                <button className="btn btn-warning form-control" onClick={() => {
+                    this.logout()
+                }}>
                     Log Out
                 </button>
 
             </div>
-            <div class="col-8">
+            <div className="col-8">
                 {this.mainProfile()}
             </div>
         </div>)
